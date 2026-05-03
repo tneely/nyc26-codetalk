@@ -32,6 +32,13 @@ export class Dat401Stack extends cdk.Stack {
       },
     );
 
+    // Add DSQL DbConnect permission for myapp role
+    cluster.grantConnect(lambdaFunction.role!);
+    cluster.addRole({
+      roleName: "myapp",
+      iamRole: lambdaFunction.role!, 
+    });
+
     // Output the cluster endpoint for easy access
     new cdk.CfnOutput(this, "ClusterEndpoint", {
       value: cluster.endpoint,
