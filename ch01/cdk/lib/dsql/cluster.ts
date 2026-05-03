@@ -39,7 +39,7 @@ export interface ClusterProps {
   /**
    * A resource-based policy document to apply to the cluster.
    */
-  policyDocument?: PolicyDocument;
+  resourceBasedPolicy?: PolicyDocument;
 }
 
 export interface DsqlRoleProps {
@@ -73,7 +73,7 @@ export class Cluster extends Construct implements IDsqlCluster {
     this.cfnCluster = new CfnCluster(this, "Resource", {
       deletionProtectionEnabled: props.deleteProtection ?? true,
       kmsEncryptionKey: props.key?.keyArn,
-      policyDocument: props.policyDocument?.toJSON(),
+      policyDocument: props.resourceBasedPolicy?.toJSON(),
       tags: props.name ? [{ key: "Name", value: props.name }] : undefined,
     });
 
