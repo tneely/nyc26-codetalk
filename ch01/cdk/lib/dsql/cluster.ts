@@ -85,10 +85,10 @@ export class Cluster extends Construct implements IDsqlCluster {
   /**
    * Create a Postgres role on this cluster, associate it with an IAM role.
    */
-  public addRole(id: string, props: DsqlRoleProps): void {
+  public addRole(props: DsqlRoleProps): void {
     const provider = this.ensureRoleProvider();
 
-    new CustomResource(this, id, {
+    new CustomResource(this, `${props.roleName}-Role`, {
       serviceToken: provider.serviceToken,
       properties: {
         endpoint: this.endpoint,
