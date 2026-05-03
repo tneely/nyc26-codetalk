@@ -1,28 +1,20 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as nodejs from "aws-cdk-lib/aws-lambda-nodejs";
-import * as dsql from "aws-cdk-lib/aws-dsql";
-import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import * as path from "path";
+
+import * as dsql from "./dsql";
 
 export class Dat401Stack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // Create DSQL cluster
-    const cluster = new dsql.CfnCluster(this, "DsqlCluster", {
-      deletionProtectionEnabled: false,
-      tags: [
-        {
-          key: "Name",
-          value: "DAT401",
-        },
-      ],
+    const cluster = new dsql.Cluster(this, "DsqlCluster", {
+      name: "DAT401",
+      deleteProtection: false,
     });
-
-    // Construct cluster endpoint
-    const clusterEndpoint = `${cluster.attrIdentifier}.dsql.${this.region}.on.aws`;
 
     const lambdaFunction = new nodejs.NodejsFunction(
       this,
@@ -35,23 +27,21 @@ export class Dat401Stack extends cdk.Stack {
         timeout: cdk.Duration.seconds(30),
         memorySize: 512,
         environment: {
-          CLUSTER_ENDPOINT: clusterEndpoint,
+          CLUSTER_ENDPOINT: cluster.endpoint,
         },
       },
     );
 
     // Add DSQL DbConnect permission for myapp role
-    lambdaFunction.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ["dsql:DbConnect"],
-        resources: [cluster.attrResourceArn],
-      }),
-    );
+    cluster.grantConnect(lambdaFunction.role!);
+    cluster.addRole({
+      roleName: "myapp",
+      iamRole: lambdaFunction.role!, 
+    });
 
     // Output the cluster endpoint for easy access
     new cdk.CfnOutput(this, "ClusterEndpoint", {
-      value: clusterEndpoint,
+      value: cluster.endpoint,
       description: "DSQL Cluster Endpoint",
     });
 
