@@ -10,7 +10,7 @@
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "PropertyTypes": true,
 
     "esModuleInterop": true,
     "skipLibCheck": true,
