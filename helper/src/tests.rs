@@ -33,7 +33,7 @@ async fn test_chapter0(client_pool: &ClientPool) -> Result<()> {
     println!("Testing Chapter 0: Basic Lambda invocation with DSQL connection\n");
 
     let req = greeting::Request {
-        name: "reinvent".to_string(),
+        name: "summit".to_string(),
     };
 
     let response: greeting::Response = lambda::invoke(client_pool.get(), &req).await?;
@@ -86,7 +86,7 @@ async fn test_chapter3(client_pool: &ClientPool, creds: &CredentialCache) -> Res
     };
 
     println!(
-        "Invoking Lambda function 'reinvent-dat401' with payload '{:?}'",
+        "Invoking Lambda function 'summit-dat401' with payload '{:?}'",
         req
     );
     let response: tpcb::Response = lambda::invoke(client_pool.get(), req).await?;

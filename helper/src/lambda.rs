@@ -8,7 +8,7 @@ use serde::{de::DeserializeOwned, Serialize};
 
 use crate::credentials::CredentialCache;
 
-const FUNCTION_NAME: &str = "reinvent-dat401";
+const FUNCTION_NAME: &str = "summit-dat401";
 
 /// Pool of Lambda clients to distribute load across multiple HTTP connections
 #[derive(Clone)]
