@@ -23,8 +23,8 @@ async fn main() -> Result<()> {
             let client_pool = lambda::client_pool(&credential_cache, 1).await?;
             tests::run_test(&client_pool, &credential_cache, chapter).await?;
         }
-        cli::Command::Setup { accounts } => {
-            setup::setup_schema(&credential_cache, accounts).await?;
+        cli::Command::Setup { accounts, with_tables } => {
+            setup::setup_schema(&credential_cache, accounts, with_tables).await?;
         }
         cli::Command::SetupCh04 => {
             setup::setup_chapter4(&credential_cache).await?;

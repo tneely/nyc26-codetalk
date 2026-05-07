@@ -19,6 +19,9 @@ pub enum Command {
     Setup {
         #[arg(long, default_value = "1000")]
         accounts: u32,
+        /// Create the accounts and transactions tables before seeding
+        #[arg(long)]
+        with_tables: bool,
     },
     /// Setup Chapter 4 (1M accounts)
     SetupCh04,

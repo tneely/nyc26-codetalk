@@ -3,38 +3,44 @@ use crate::db;
 use anyhow::Result;
 use indicatif::{ProgressBar, ProgressStyle};
 
-pub async fn setup_schema(creds: &CredentialCache, num_accounts: u32) -> Result<()> {
+pub async fn setup_schema(
+    creds: &CredentialCache,
+    num_accounts: u32,
+    with_tables: bool,
+) -> Result<()> {
     println!("Setting up database schema...");
     let pool = db::get_pool(creds).await?;
 
-    // Create accounts table
-    sqlx::query(
-        r#"
-        CREATE TABLE IF NOT EXISTS accounts (
-            id INTEGER PRIMARY KEY,
-            balance INTEGER NOT NULL
+    if with_tables {
+        // Create accounts table
+        sqlx::query(
+            r#"
+            CREATE TABLE IF NOT EXISTS accounts (
+                id INTEGER PRIMARY KEY,
+                balance INTEGER NOT NULL
+            )
+            "#,
         )
-        "#,
-    )
-    .execute(&pool)
-    .await?;
-    println!("Created accounts table");
+        .execute(&pool)
+        .await?;
+        println!("Created accounts table");
 
-    // Create transactions table
-    sqlx::query(
-        r#"
-        CREATE TABLE IF NOT EXISTS transactions (
-            id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-            payer_id INT,
-            payee_id INT,
-            amount INT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        // Create transactions table
+        sqlx::query(
+            r#"
+            CREATE TABLE IF NOT EXISTS transactions (
+                id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                payer_id INT,
+                payee_id INT,
+                amount INT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            "#,
         )
-        "#,
-    )
-    .execute(&pool)
-    .await?;
-    println!("Created transactions table");
+        .execute(&pool)
+        .await?;
+        println!("Created transactions table");
+    }
 
     // Clear existing data
     sqlx::query("DELETE FROM accounts").execute(&pool).await?;
