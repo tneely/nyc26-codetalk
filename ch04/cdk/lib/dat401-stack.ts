@@ -1,4 +1,5 @@
 import * as cdk from "aws-cdk-lib";
+import * as kinesis from "aws-cdk-lib/aws-kinesis";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as nodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";

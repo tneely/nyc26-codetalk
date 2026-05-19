@@ -10,6 +10,7 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@aws-sdk/client-dsql": "^3.1050.0",
     "@types/node": "^20.0.0",
     "aws-cdk": "^2.0.0",
     "esbuild": "^0.28.0",
