@@ -40,6 +40,12 @@ export class Dat401Stack extends cdk.Stack {
       iamRole: lambdaFunction.role!, 
     });
 
+    const stream = new kinesis.Stream(this, "Stream");
+    new dsql.ChangeStream(this, "ChangeStream", {
+      cluster,
+      targetStream: stream,
+    });
+
     // Output the cluster endpoint for easy access
     new cdk.CfnOutput(this, "ClusterEndpoint", {
       value: cluster.endpoint,
@@ -50,6 +56,12 @@ export class Dat401Stack extends cdk.Stack {
     new cdk.CfnOutput(this, "LambdaRoleArn", {
       value: lambdaFunction.role!.roleArn,
       description: "Lambda Execution Role ARN",
+    });
+
+    // Output the Kinesis stream name
+    new cdk.CfnOutput(this, "StreamName", {
+      value: stream.streamName,
+      description: "DSQL CDC Stream",
     });
   }
 }
