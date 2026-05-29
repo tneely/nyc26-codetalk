@@ -59,7 +59,7 @@ pub async fn setup_schema(
         let end_id = (inserted + BATCH_SIZE).min(num_accounts as i32);
 
         sqlx::query(
-            "INSERT INTO accounts (id, balance) SELECT id, 100 FROM generate_series($1, $2) AS id",
+            "INSERT INTO accounts (id, balance) SELECT id, 10000 FROM generate_series($1, $2) AS id",
         )
         .bind(start_id)
         .bind(end_id)
@@ -115,7 +115,7 @@ pub async fn setup_chapter4(creds: &CredentialCache) -> Result<()> {
         let batch_count = end_id - start_id + 1;
 
         sqlx::query(
-            "INSERT INTO accounts (id, balance) SELECT id, 100 FROM generate_series($1, $2) AS id",
+            "INSERT INTO accounts (id, balance) SELECT id, 10000 FROM generate_series($1, $2) AS id",
         )
         .bind(start_id as i32)
         .bind(end_id as i32)
