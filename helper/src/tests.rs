@@ -1,7 +1,7 @@
 use crate::{
     credentials::CredentialCache,
     db,
-    lambda::{self, greeting, tpcb, ClientPool},
+    lambda::{self, ClientPool, greeting, tpcb},
     stress,
 };
 use anyhow::Result;
@@ -15,7 +15,11 @@ struct Transaction {
     created_at: chrono::NaiveDateTime,
 }
 
-pub async fn run_test(client_pool: &ClientPool, creds: &CredentialCache, chapter: u32) -> Result<()> {
+pub async fn run_test(
+    client_pool: &ClientPool,
+    creds: &CredentialCache,
+    chapter: u32,
+) -> Result<()> {
     match chapter {
         0 => test_chapter0(client_pool).await,
         1 => test_chapter1(client_pool).await,

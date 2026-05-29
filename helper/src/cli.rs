@@ -22,6 +22,8 @@ pub enum Command {
         /// Create the accounts and transactions tables before seeding
         #[arg(long)]
         with_tables: bool,
+        #[arg(long)]
+        cleanup: bool,
     },
     /// Setup Chapter 4 (1M accounts)
     SetupCh04,

@@ -23,13 +23,20 @@ async fn main() -> Result<()> {
             let client_pool = lambda::client_pool(&credential_cache, 1).await?;
             tests::run_test(&client_pool, &credential_cache, chapter).await?;
         }
-        cli::Command::Setup { accounts, with_tables } => {
-            setup::setup_schema(&credential_cache, accounts, with_tables).await?;
+        cli::Command::Setup {
+            accounts,
+            with_tables,
+            cleanup,
+        } => {
+            setup::setup_schema(&credential_cache, accounts, with_tables, cleanup).await?;
         }
         cli::Command::SetupCh04 => {
             setup::setup_chapter4(&credential_cache).await?;
         }
-        cli::Command::SustainedLoad { invocations_per_sec, accounts } => {
+        cli::Command::SustainedLoad {
+            invocations_per_sec,
+            accounts,
+        } => {
             // Use 16 clients to distribute load across multiple HTTP connections
             let client_pool = lambda::client_pool(&credential_cache, 16).await?;
             stress::run_sustained_load(&client_pool, invocations_per_sec, accounts).await?;

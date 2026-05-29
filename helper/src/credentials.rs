@@ -1,7 +1,7 @@
 use anyhow::Result;
 use aws_config::BehaviorVersion;
-use aws_credential_types::provider::ProvideCredentials;
 use aws_credential_types::Credentials;
+use aws_credential_types::provider::ProvideCredentials;
 use std::sync::Arc;
 use std::time::{Duration, SystemTime};
 use tokio::sync::RwLock;

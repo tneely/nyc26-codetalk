@@ -7,6 +7,7 @@ pub async fn setup_schema(
     creds: &CredentialCache,
     num_accounts: u32,
     with_tables: bool,
+    cleanup: bool,
 ) -> Result<()> {
     println!("Setting up database schema...");
     let pool = db::get_pool(creds).await?;
@@ -42,12 +43,14 @@ pub async fn setup_schema(
         println!("Created transactions table");
     }
 
-    // Clear existing data
-    sqlx::query("DELETE FROM accounts").execute(&pool).await?;
-    sqlx::query("DELETE FROM transactions")
-        .execute(&pool)
-        .await?;
-    println!("Cleared existing data");
+    if cleanup {
+        // Clear existing data
+        sqlx::query("DELETE FROM accounts").execute(&pool).await?;
+        sqlx::query("DELETE FROM transactions")
+            .execute(&pool)
+            .await?;
+        println!("Cleared existing data");
+    }
 
     // Insert accounts using generate_series in batches
     println!("Inserting {} accounts...", num_accounts);

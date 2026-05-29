@@ -1,9 +1,9 @@
-use crate::lambda::{self, tpcb, ClientPool};
+use crate::lambda::{self, ClientPool, tpcb};
 use anyhow::Result;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
 use tokio::task::JoinSet;
 
@@ -56,11 +56,14 @@ pub async fn run_stress_test(
 
                 let pool = client_pool.clone();
                 tasks.spawn(async move {
-                    lambda::invoke::<_, tpcb::Response>(pool.get(), tpcb::Request {
-                        payer_id,
-                        payee_id,
-                        amount: 1,
-                    })
+                    lambda::invoke::<_, tpcb::Response>(
+                        pool.get(),
+                        tpcb::Request {
+                            payer_id,
+                            payee_id,
+                            amount: 1,
+                        },
+                    )
                     .await
                 });
                 launched += 1;
@@ -222,7 +225,11 @@ pub async fn run_sustained_load(
 
     let m = MultiProgress::new();
     let pb = m.add(ProgressBar::new_spinner());
-    pb.set_style(ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap());
+    pb.set_style(
+        ProgressStyle::default_spinner()
+            .template("{spinner:.green} {msg}")
+            .unwrap(),
+    );
 
     // AIMD controller - adjusts concurrency based on dispatch errors only
     let aimd_running = running.clone();
@@ -301,11 +308,14 @@ pub async fn run_sustained_load(
         let current = in_flight.load(Ordering::Relaxed);
 
         // Spawn tasks up to concurrency target AND rate limit
-        let to_spawn = target.saturating_sub(current)
+        let to_spawn = target
+            .saturating_sub(current)
             .min(target_rate.saturating_sub(spawned_this_sec));
 
         for _ in 0..to_spawn {
-            if !running.load(Ordering::SeqCst) { break; }
+            if !running.load(Ordering::SeqCst) {
+                break;
+            }
 
             let payer_id = rand::random::<u32>() % num_accounts + 1;
             let mut payee_id = rand::random::<u32>() % num_accounts + 1;

@@ -2,9 +2,9 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
 use anyhow::Result;
-use aws_config::{retry::RetryConfig, timeout::TimeoutConfig, BehaviorVersion};
-use aws_sdk_lambda::{error::SdkError, primitives::Blob, Client};
-use serde::{de::DeserializeOwned, Serialize};
+use aws_config::{BehaviorVersion, retry::RetryConfig, timeout::TimeoutConfig};
+use aws_sdk_lambda::{Client, error::SdkError, primitives::Blob};
+use serde::{Serialize, de::DeserializeOwned};
 
 use crate::credentials::CredentialCache;
 
