@@ -20,7 +20,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         cli::Command::TestChapter { chapter } => {
-            let client_pool = lambda::client_pool(&credential_cache, 1).await?;
+            let client_pool = lambda::client_pool(&credential_cache, 16).await?;
             tests::run_test(&client_pool, &credential_cache, chapter).await?;
         }
         cli::Command::Setup {
