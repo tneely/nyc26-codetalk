@@ -44,5 +44,23 @@ export class Dat401Stack extends cdk.Stack {
       value: lambdaFunction.role!.roleArn,
       description: "Lambda Execution Role ARN",
     });
+
+    this.setupStream(cluster);
+  }
+
+  setupStream(cluster: dsql.Cluster) {
+    const stream = new kinesis.Stream(this, "Stream", {
+      shardCount: 16,
+    });
+    new dsql.ChangeStream(this, "ChangeStream", {
+      cluster,
+      targetStream: stream,
+    });
+
+    // Output the Kinesis stream name
+    new cdk.CfnOutput(this, "StreamName", {
+      value: stream.streamName,
+      description: "DSQL CDC Stream",
+    });
   }
 }
